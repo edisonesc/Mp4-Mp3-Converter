@@ -88,7 +88,34 @@ class Ui_MainWindow(object):
         if(len(musics) == 0):
             print("error conversion")
         else:
-            print("will be converted.")
+            if(not destination == ""):
+                print("will be converted.")
+                for e in musics:
+                    song_name = e.replace(source, "").replace(" ", "")
+                    newStr = e.replace(" ", "\ ")
+                    chars = set('()')
+                    os.chdir(source)
+                    if any((c in chars) for c in newStr):
+                        print(song_name + " was found.")
+                        print(song_name)
+                        old_Name = e.replace(source, "")
+                        new_Name = song_name.replace("(", "").replace(")", "")
+                        os.rename(old_Name, new_Name)
+                        print(old_Name +" is now " + new_Name)
+
+                    # subprocess.call("ffmpeg -i " + newStr.replace(source, "") + " -f mp3 -vn " + destination + " " + song_name + ".mp3", cwd="/", shell=True)
+                    subprocess.call("ffmpeg -i " + newStr + " -f mp3 -vn " + destination + song_name + ".mp3", cwd="/", shell=True)
+
+                    print("NewSTRING: " + newStr.replace(source, ""))
+                    print("SONG NAME: " + song_name)
+                    print("DESTINATION " + destination)
+                    # print("MUSIC INDEX " + musics.index(e))
+
+
+
+
+            else:
+                print("NO DESTINATION")
 
 
     def check_path(self):
@@ -98,8 +125,10 @@ class Ui_MainWindow(object):
             musics = ["No mp4 found."]
         model = QtGui.QStandardItemModel(self.listView)
         for i in musics:
-            item = QtGui.QStandardItem(i.replace(path, "").replace(" ", ""))
+            song_name = i.replace(path, "").replace(" ", "")
+            item = QtGui.QStandardItem(song_name)
             model.appendRow(item)
+
         self.listView.setModel(model)
         self.listView.show()
 
